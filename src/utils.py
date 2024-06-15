@@ -18,6 +18,9 @@ MAX_ITERS_GD_ROSENBROCK = 10000
 INIT_XO = np.array([1, 1])
 INIT_X0_ROSENBROCK = np.array([-1, 2], dtype=np.float64)
 
+QP_INIT_XO = np.array([0.1, 0.2, 0.7], dtype=np.float64)
+LP_INIT_XO = np.array([0.5, 0.75], dtype=np.float64)
+
 
 def plot_contour_lines(objective_func, x_history_list: list[list[float]], labels: list[str], example_name: str,
                        x_lim: tuple[int, int], y_lim: tuple[int, int], close_up_factor: int = 2, save_flag: bool = False):

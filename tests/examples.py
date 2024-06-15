@@ -51,3 +51,59 @@ def exp_comb_function(x: np.array, hessian: bool = False):
     h = np.array([[math.e ** (x[0] + 3 * x[1] - 0.1) + math.e ** (x[0] - 3 * x[1] - 0.1) + math.e ** (-x[0] - 0.1), 0],
                   [0, 9 * math.e ** (x[0] + 3 * x[1] - 0.1) + 9 * math.e ** (x[0] - 3 * x[1] - 0.1)]]) if hessian else None
     return f, g.T, h
+
+
+def qp(x: np.array, hessian: bool = False):
+    f = x[0] ** 2 + x[1] ** 2 + (x[2] + 1)**2
+    g = np.array([2 * x[0], 2 * x[1], 2 * (x[2] + 1)])
+    h = np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]]) if hessian else None
+    return f, g.T, h
+
+
+def qp_constraint_x(x: np.array, hessian: bool = False):
+    f = -x[0]
+    g = np.array([-1, 0, 0])
+    h = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]) if hessian else None
+    return f, g.T, h
+
+
+def qp_constraint_y(x: np.array, hessian: bool = False):
+    f = -x[1]
+    g = np.array([0, -1, 0])
+    h = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]) if hessian else None
+    return f, g.T, h
+
+
+def qp_constraint_z(x: np.array, hessian: bool = False):
+    f = -x[2]
+    g = np.array([0, 0, -1])
+    h = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]) if hessian else None
+    return f, g.T, h
+
+
+def lp(x: np.array, hessian: bool = False):
+    f = - x[0] - x[1]
+    g = np.array([1, 1])
+    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    return f, g.T, h
+
+
+def lp_constraint_x(x: np.array, hessian: bool = False):
+    f = x[0] - 2
+    g = np.array([1, 0])
+    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    return f, g.T, h
+
+
+def lp_constraint_y1(x: np.array, hessian: bool = False):
+    f = x[1] - 1
+    g = np.array([0, 1])
+    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    return f, g.T, h
+
+
+def lp_constraint_y2(x: np.array, hessian: bool = False):
+    f = - x[1]
+    g = np.array([0, -1])
+    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    return f, g.T, h
