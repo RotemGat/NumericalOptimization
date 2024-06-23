@@ -103,7 +103,7 @@ def plot_feasible_set_2d(path, title, save_flag: bool = False):
     ax.legend()
     plt.show()
     if save_flag:
-        fig.savefig(f'Feasible_region_3D_{title}.png')
+        fig.savefig(f'Feasible_region_2D_{title}.png')
 
 
 def plot_feasible_regions_3d(path, title, save_flag: bool = False):
@@ -122,4 +122,4 @@ def plot_feasible_regions_3d(path, title, save_flag: bool = False):
     ax.view_init(45, 45)
     plt.show()
     if save_flag:
-        fig.savefig(f'Feasible_region_2D_{title}.png')
+        fig.savefig(f'Feasible_region_3D_{title}.png')
