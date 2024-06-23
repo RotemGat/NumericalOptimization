@@ -1,12 +1,11 @@
 import math
-from typing import Any
 
 from utils import *
 
 
 class InteriorPointSolver:
     def __init__(self, init_t: int = INIT_T, mu: int = MU,  alpha: float = ALPHA, wolfe_const: float = WOLFE_CONST,
-                 backtracking_const: float = BACKTRACK_CONST):
+                 backtracking_const: float = BACKTRACK_CONST, epsilon=EPSILON, obj_tol=OBJ_TOL, param_tol=STEP_TOL):
         self.init_t = init_t
         self.mu = mu
         self.alpha = alpha
@@ -14,9 +13,11 @@ class InteriorPointSolver:
         self.backtracking_const = backtracking_const
         self.x_history = []
         self.f_history = []
+        self.obj_tol = obj_tol
+        self.param_tol = param_tol
+        self.epsilon = epsilon
 
-    def minimize(self, func, ineq_constraints, eq_constraints_mat, eq_constraints_rhs, x0, outer_loop_max_iter=100, inner_loop_max_iter=15,
-                 epsilon=1e-6, obj_tol=1e-8, param_tol=1e-6):
+    def minimize(self, func, ineq_constraints, eq_constraints_mat, eq_constraints_rhs, x0, outer_loop_max_iter=100, inner_loop_max_iter=100):
         """ Minimize the function func subject to the list of inequality constraints specified by ineq_constraints and to the affine
         equality constraints specified by eq_constraints_mat and the right hand side vector eq_constraints_rhs """
 
@@ -28,7 +29,7 @@ class InteriorPointSolver:
 
         outer_i = 0
         self._save_history(outer_i, x, func)
-        while outer_i < outer_loop_max_iter and len(ineq_constraints) / t > epsilon:
+        while outer_i < outer_loop_max_iter and len(ineq_constraints) / t > self.epsilon:
             for inner_iteration in range(inner_loop_max_iter):
                 p = self._solve_kkt_system(g, h, eq_constraints_mat, eq_constraints_rhs)
 
@@ -40,7 +41,7 @@ class InteriorPointSolver:
                 lambda_squared = 0.5 * ((p.T @ (h_new @ p)) ** 0.5)
 
                 # np.abs(f_new - f) < obj_tol or np.linalg.norm(x - x_new) < param_tol
-                if lambda_squared < obj_tol:
+                if lambda_squared < self.obj_tol:
                     success = True
                     x = x_new
                     break
@@ -103,7 +104,8 @@ class InteriorPointSolver:
         alpha, c, rho = self.alpha, self.c, self.backtracking_const,
         constraints_met = False
         old_alpha = math.inf
-        while (func(x + alpha * p, False)[0] > f + c * alpha * p.dot(p) or not constraints_met) and (abs(alpha - old_alpha) > 1e-1 or old_alpha == math.inf):
+        while (func(x + alpha * p, False)[0] > f + c * alpha * p.dot(p) or not constraints_met) and (abs(alpha - old_alpha) > 1e-2 or
+                                                                                                     old_alpha == math.inf):
             old_alpha = alpha
             alpha = rho * old_alpha
             constraints_met = all([func(x + alpha * p, False)[0] < 0 for func in ineq_constraints])

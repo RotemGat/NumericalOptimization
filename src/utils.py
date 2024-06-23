@@ -20,6 +20,7 @@ INIT_X0_ROSENBROCK = np.array([-1, 2], dtype=np.float64)
 
 INIT_T = 1
 MU = 10
+EPSILON = 1e-6
 QP_INIT_XO = np.array([0.1, 0.2, 0.7], dtype=np.float64)
 LP_INIT_XO = np.array([0.5, 0.75], dtype=np.float64)
 
@@ -76,3 +77,49 @@ def plot_function_values(f_values_list: list[list[float]], labels: list[str], ex
     if save_flag:
         fig.savefig(f'function_values_{example_name}.png')
     plt.show()
+
+
+def plot_feasible_set_2d(path, title, save_flag: bool = False):
+    fig, ax = plt.subplots(1, 1)
+    x_coords, y_coords = zip(*path)
+    ax.plot(x_coords, y_coords, c='black', label='path')
+    ax.scatter(path[-1][0], path[-1][1], s=60, color='black', marker='o', label='final candidate')
+
+    x = np.linspace(-1, 3, 300)
+    y = np.linspace(-2, 2, 300)
+    constraints = {'y=0': (x, x * 0),
+                   'y=1': (x, x * 0 + 1),
+                   'x=2': (y * 0 + 2, y),
+                   'y=-x+1': (x, -x + 1)}
+
+    colors = ['pink', 'purple', 'blue', 'skyblue']
+    for constraint, point, color in zip(constraints.keys(), constraints.values(), colors[:len(constraints) + 1]):
+        ax.plot(point[0], point[1], label=constraint, color=color)
+
+    ax.fill([0, 2, 2, 1], [1, 1, 0, 0], label='feasible region', alpha=0.7, color='lightgray')
+    ax.set_title(f'Feasible region and Path 2D of {title}')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.legend()
+    plt.show()
+    if save_flag:
+        fig.savefig(f'Feasible_region_3D_{title}.png')
+
+
+def plot_feasible_regions_3d(path, title, save_flag: bool = False):
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    path = np.array(path)
+
+    ax.plot_trisurf([1, 0, 0], [0, 1, 0], [0, 0, 1], color='lightgray', alpha=0.5)
+    ax.plot(path[:, 0], path[:, 1], path[:, 2], label='Path')
+    ax.scatter(path[-1][0], path[-1][1], path[-1][2], s=50, c='black', marker='o', label='Final candidate')
+    ax.set_title(f"Feasible Regions and Path 3D of {title}")
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    plt.legend()
+    ax.view_init(45, 45)
+    plt.show()
+    if save_flag:
+        fig.savefig(f'Feasible_region_2D_{title}.png')
