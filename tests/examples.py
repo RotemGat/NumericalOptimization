@@ -63,47 +63,60 @@ def qp(x: np.array, hessian: bool = False):
 def qp_constraint_x(x: np.array, hessian: bool = False):
     f = -x[0]
     g = np.array([-1, 0, 0])
-    h = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]) if hessian else None
+    h = np.zeros((3, 3)) if hessian else None
     return f, g.T, h
 
 
 def qp_constraint_y(x: np.array, hessian: bool = False):
     f = -x[1]
     g = np.array([0, -1, 0])
-    h = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]) if hessian else None
+    h = np.zeros((3, 3)) if hessian else None
     return f, g.T, h
 
 
 def qp_constraint_z(x: np.array, hessian: bool = False):
     f = -x[2]
     g = np.array([0, 0, -1])
-    h = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]) if hessian else None
+    h = np.zeros((3, 3)) if hessian else None
     return f, g.T, h
+
+
+qp_ineq_constraints = [qp_constraint_x, qp_constraint_y, qp_constraint_z]
 
 
 def lp(x: np.array, hessian: bool = False):
     f = - x[0] - x[1]
-    g = np.array([1, 1])
-    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    g = np.array([-1, -1])
+    h = np.zeros((2, 2)) if hessian else None
+    return f, g.T, h
+
+
+def lp_constraint_x_y(x: np.array, hessian: bool = False):
+    f = -x[0] - x[1] + 1
+    g = np.array([-1, -1])
+    h = np.zeros((2, 2)) if hessian else None
     return f, g.T, h
 
 
 def lp_constraint_x(x: np.array, hessian: bool = False):
     f = x[0] - 2
     g = np.array([1, 0])
-    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    h = np.zeros((2, 2)) if hessian else None
     return f, g.T, h
 
 
 def lp_constraint_y1(x: np.array, hessian: bool = False):
     f = x[1] - 1
     g = np.array([0, 1])
-    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    h = np.zeros((2, 2)) if hessian else None
     return f, g.T, h
 
 
 def lp_constraint_y2(x: np.array, hessian: bool = False):
     f = - x[1]
     g = np.array([0, -1])
-    h = np.array([[0, 0], [0, 0], [0, 0]]) if hessian else None
+    h = np.zeros((2, 2)) if hessian else None
     return f, g.T, h
+
+
+lp_ineq_constraints = [lp_constraint_x_y, lp_constraint_x, lp_constraint_y1, lp_constraint_y2]
