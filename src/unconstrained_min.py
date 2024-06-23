@@ -1,5 +1,3 @@
-import numpy as np
-
 from utils import *
 
 
@@ -38,7 +36,7 @@ class LineSearchMinimization:
         try:
             while not success and i < max_iter:
                 p = search_direction(x, func)
-                alpha = self._backtracking(func, x, f, p)
+                alpha = backtracking(self.alpha, self.c, self.backtracking_const, func, x, f, p)
                 x_new = x + p * alpha
                 f_new, g_new, h_new = func(x_new, is_hessian)
                 self._save_history(i, x_new, f_new)
@@ -54,12 +52,6 @@ class LineSearchMinimization:
             print('An error occurred')
             print(e)
             return x, f, self.x_history, self.f_history, False
-
-    def _backtracking(self, func, x, f, p):
-        alpha, c, rho = self.alpha, self.c, self.backtracking_const
-        while func(x + alpha * p, False)[0] > f + c * alpha * np.dot(-p, p):
-            alpha = rho * alpha
-        return alpha
 
     @staticmethod
     def _get_steepest_descent(x, objective_function):

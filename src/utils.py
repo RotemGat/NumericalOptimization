@@ -18,8 +18,16 @@ MAX_ITERS_GD_ROSENBROCK = 10000
 INIT_XO = np.array([1, 1])
 INIT_X0_ROSENBROCK = np.array([-1, 2], dtype=np.float64)
 
+INIT_T = 1
+MU = 10
 QP_INIT_XO = np.array([0.1, 0.2, 0.7], dtype=np.float64)
 LP_INIT_XO = np.array([0.5, 0.75], dtype=np.float64)
+
+
+def backtracking(alpha, c, rho, func, x, f, p, g=np.array([])):
+    while func(x + alpha * p, False)[0] > f + c * alpha * (np.dot(-p, p) if not g.size > 0 else g.dot(p)):
+        alpha = rho * alpha
+    return alpha
 
 
 def plot_contour_lines(objective_func, x_history_list: list[list[float]], labels: list[str], example_name: str,
